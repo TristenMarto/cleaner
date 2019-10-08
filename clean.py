@@ -1,22 +1,32 @@
 import os
-from selenium import webdriver
-
-current = os.getcwd()
-browser = webdriver.Chrome
-
-new_name = input("naam voor nieuwe map: ")
-
-homebase = "/Users/tristen.assenmacher/Downloads"
-parent = "/Users/tristen.assenmacher/Desktop/Studie/projects"
-target = os.path.join(parent, new_name)
+import time
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
 
-print(f"""
-je bent in {current}, hebt een pad naar {parent} en hebt als target {target}.
-Je nieuwe map heet {new_name}
-""")
+class MyHandler(FileSystemEventHandler):
+    def on_modified(self, event):
+        for file in os.listdir(folder):
+            tracking_path = os.path.join(folder,file)
+            if not file.startswith('.') and os.path.isfile(tracking_path) == True:
+                x, y = os.path.splitext(file)[0].split("- ")
+                final_directory = os.path.join(folder, y)
+                os.makedirs(final_directory)
+                final_file_path = final_directory + "/" + file
+                os.rename(tracking_path, final_file_path)
+            
+        
 
-os.mkdir(target)
-os.chdir(target)
-current = os.getcwd()
-print(f"nu ben je in {current}")
+
+folder = '/Users/tristen.assenmacher/Desktop/Checks'
+event_handler = MyHandler()
+observer = Observer()
+observer.schedule(event_handler, folder, recursive=False)
+observer.start()
+
+try:
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt:
+    observer.stop()
+observer.join()
