@@ -12,7 +12,7 @@ class MyHandler(FileSystemEventHandler):
                 x, y = os.path.splitext(file)[0].split("- ")
                 final_directory = os.path.join(folder, y)
                 os.makedirs(final_directory)
-                final_file_path = final_directory + "/" + file
+                final_file_path = final_directory + "/" + "kvk_" + file
                 os.rename(tracking_path, final_file_path)
             
         
